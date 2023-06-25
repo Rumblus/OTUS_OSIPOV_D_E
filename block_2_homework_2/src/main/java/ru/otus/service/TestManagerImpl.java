@@ -3,11 +3,9 @@ package ru.otus.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.otus.dao.TestReader;
-import ru.otus.dao.TestReaderImpl;
 import ru.otus.domain.Person;
 import ru.otus.domain.Question;
 import ru.otus.utils.QuestionBuilder;
-import ru.otus.utils.QuestionBuilderImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,16 +26,17 @@ public class TestManagerImpl implements TestManager {
     @Value("${passingScore}")
     private int minPassingScore;
 
-    TestManagerImpl(TestReaderImpl testReader, QuestionBuilderImpl questionBuilder) {
+    TestManagerImpl(TestReader testReader, QuestionBuilder questionBuilder) {
         this.testReader = testReader;
         this.questionBuilder = questionBuilder;
-        this.person = new Person();
+        this.person = null;
     }
 
     public void setMinPassingScore(int minPassingScore) {
         this.minPassingScore = minPassingScore;
     }
 
+    @Override
     public void run() {
         List<String> questionsFromFile = testReader.readQuestions();
 
@@ -45,6 +44,8 @@ public class TestManagerImpl implements TestManager {
             Question question = questionBuilder.makeQuestionFromString(s);
             questions.add(question);
         }
+
+        this.person = new Person();
 
         processTest();
 
@@ -57,7 +58,7 @@ public class TestManagerImpl implements TestManager {
         }
     }
 
-    public void processTest() {
+    private void processTest() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Enter Your first name:");
@@ -84,6 +85,7 @@ public class TestManagerImpl implements TestManager {
         System.out.println(str);
     }
 
+    @Override
     public boolean checkResults() {
         int i = 0;
         int correctCount = 0;

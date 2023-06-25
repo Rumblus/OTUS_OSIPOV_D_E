@@ -9,36 +9,29 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component("testReader")
+@Component
 public class TestReaderImpl implements TestReader {
-    private String fileName;
+    private final String fileName;
 
     TestReaderImpl(@Value("${testFile.name}") String fileName) {
         this.fileName = fileName;
     }
 
-    public String getFilename() {
-        return fileName;
-    }
-
-    public void setFilename(String filename) {
-        this.fileName = filename;
-    }
-
+    @Override
     public List<String> readQuestions() {
-        InputStream inputStream = TestReaderImpl.class.getClassLoader().getResourceAsStream("test.csv");
+        InputStream inputStream = TestReaderImpl.class.getClassLoader().getResourceAsStream(fileName);
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
-        List<String> questions = new ArrayList<>();
+        List<String> strings = new ArrayList<>();
 
         try {
             while ((line = reader.readLine()) != null) {
-                questions.add(line);
+                strings.add(line);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return questions;
+        return strings;
     }
 }

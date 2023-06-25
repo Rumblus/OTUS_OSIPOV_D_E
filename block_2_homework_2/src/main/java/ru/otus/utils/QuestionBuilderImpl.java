@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Component("questionBuilder")
+@Component
 public class QuestionBuilderImpl implements QuestionBuilder {
+    @Override
     public Question makeQuestionFromString(String line) {
         String[] row = line.split(";");
         Question result = makeQuestion(row);
