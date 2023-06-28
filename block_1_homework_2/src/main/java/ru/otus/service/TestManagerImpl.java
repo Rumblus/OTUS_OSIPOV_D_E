@@ -32,10 +32,6 @@ public class TestManagerImpl implements TestManager {
         this.person = null;
     }
 
-    public void setMinPassingScore(int minPassingScore) {
-        this.minPassingScore = minPassingScore;
-    }
-
     @Override
     public void run() {
         List<String> questionsFromFile = testReader.readQuestions();
@@ -56,6 +52,25 @@ public class TestManagerImpl implements TestManager {
         } else {
             System.out.println("You failed( Try again...");
         }
+    }
+
+    @Override
+    public boolean checkResults() {
+        int i = 0;
+        int correctCount = 0;
+
+        for(Question q : questions) {
+            int idx = Integer.parseInt(answers.get(i++));
+            if (q.getCorrectAnswerIdx() == idx) {
+                ++correctCount;
+            }
+        }
+
+        if (correctCount >= minPassingScore) {
+            return true;
+        }
+
+        return false;
     }
 
     private void processTest() {
@@ -83,24 +98,5 @@ public class TestManagerImpl implements TestManager {
         }
 
         System.out.println(str);
-    }
-
-    @Override
-    public boolean checkResults() {
-        int i = 0;
-        int correctCount = 0;
-
-        for(Question q : questions) {
-            int idx = Integer.parseInt(answers.get(i++));
-            if (q.getCorrectAnswerIdx() == idx) {
-                ++correctCount;
-            }
-        }
-
-        if (correctCount >= minPassingScore) {
-            return true;
-        }
-
-        return false;
     }
 }
