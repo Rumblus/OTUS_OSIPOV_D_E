@@ -8,7 +8,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.dao.LibraryDaoJdbc;
+import ru.otus.domain.Author;
 import ru.otus.domain.Book;
+import ru.otus.domain.Genre;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -28,8 +30,8 @@ public class LibraryManagerImplTest {
     @DisplayName("Должен добавлять книгу в библиотеку")
     @Test
     public void shouldCreateBook() {
-        Book book = new Book(3, "Test Book", 2, 2);
-        libraryManager.createBook(book.getTitle(), book.getAuthorId(), book.getGenreId());
+        Book book = new Book(3, "Test Book", new Author(2, "Lev Tolstoi"), new Genre(2, "Fairy Tale"));
+        libraryManager.createBook(book.getTitle(), book.getAuthor().getName(), book.getGenre().getName());
 
         PrintStream systemOutput = System.out;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -40,8 +42,8 @@ public class LibraryManagerImplTest {
 
         String expectedString = new String("Book\n\tid: " + book.getId() +
                 "\n\ttitle: " + book.getTitle() +
-                "\n\tauthorId: " + "Lev Tolstoi" +
-                "\n\tgenreId: " + "Fairy Tale");
+                "\n\tauthor: " + "Lev Tolstoi" +
+                "\n\tgenre: " + "Fairy Tale");
 
         String[] lines = baos.toString().split(System.lineSeparator());
         System.setOut(systemOutput);
@@ -56,14 +58,14 @@ public class LibraryManagerImplTest {
         PrintStream out = new PrintStream(baos);
         System.setOut(out);
 
-        Book book = new Book(1, "Black Arrow", 1, 1);
+        Book book = new Book(1, "Black Arrow", new Author(1, "Robert Lewis Stevenson"), new Genre(1, "Novel"));
         libraryManager.getBookById(book.getId());
 
         String expectedString = new String(
                 "Book\n\tid: " + book.getId() +
                 "\n\ttitle: " + book.getTitle() +
-                "\n\tauthorId: " + "Robert Lewis Stevenson" +
-                "\n\tgenreId: " + "Novel");
+                "\n\tauthor: " + "Robert Lewis Stevenson" +
+                "\n\tgenre: " + "Novel");
 
         String[] lines = baos.toString().split(System.lineSeparator());
         System.setOut(systemOutput);
@@ -73,8 +75,8 @@ public class LibraryManagerImplTest {
     @DisplayName("Должен редактировать книгу по ID")
     @Test
     public void shouldUpdateBook() {
-        Book book = new Book(1, "Test Book", 2, 2);
-        libraryManager.updateBook(book.getId(), book.getTitle(), book.getAuthorId(), book.getGenreId());
+        Book book = new Book(1, "TestBook", new Author(2, "Lev Tolstoi"), new Genre(2, "Fairy Tale"));
+        libraryManager.updateBook(book.getId(), book.getTitle(), book.getAuthor().getName(), book.getGenre().getName());
 
         PrintStream systemOutput = System.out;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -86,8 +88,8 @@ public class LibraryManagerImplTest {
         String expectedString = new String(
                 "Book\n\tid: " + book.getId() +
                         "\n\ttitle: " + book.getTitle() +
-                        "\n\tauthorId: " + "Lev Tolstoi" +
-                        "\n\tgenreId: " + "Fairy Tale");
+                        "\n\tauthor: " + "Lev Tolstoi" +
+                        "\n\tgenre: " + "Fairy Tale");
 
         String[] lines = baos.toString().split(System.lineSeparator());
         System.setOut(systemOutput);

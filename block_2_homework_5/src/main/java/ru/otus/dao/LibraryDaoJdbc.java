@@ -15,6 +15,7 @@ import ru.otus.domain.Genre;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -26,8 +27,8 @@ public class LibraryDaoJdbc implements LibraryDao {
     public Book insertBook(Book book) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("title", book.getTitle());
-        params.addValue("authorId", book.getAuthorId());
-        params.addValue("genreId", book.getGenreId());
+        params.addValue("authorId", book.getAuthor().getId());
+        params.addValue("genreId", book.getGenre().getId());
         KeyHolder kh = new GeneratedKeyHolder();
 
         jdbc.update("insert into BOOKS(title, author_id, genre_id) values(:title, :authorId, :genreId)",
@@ -39,10 +40,20 @@ public class LibraryDaoJdbc implements LibraryDao {
 
     @Override
     public Optional<Book> getBookById(long id) {
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("id", id);
-        List<Book> bookList = jdbc.query("select * from BOOKS where id = :id", params, new BookMapper());
+        List<Book> bookList = jdbc.query("select id, title, author_id, genre_id from BOOKS where id = :id",
+                                            Map.of("id", id),
+                                            new BookMapper());
+
         if (!bookList.isEmpty()) {
+            Author author = getAuthorById(bookList.get(0).getAuthor().getId());
+            Genre genre = getGenreById(bookList.get(0).getGenre().getId());
+            if ((author == null) || (genre == null)) {
+                return Optional.ofNullable(null);
+            }
+
+            bookList.get(0).setAuthor(author);
+            bookList.get(0).setGenre(genre);
+
             return Optional.of(bookList.get(0));
         } else {
             return Optional.ofNullable(null);
@@ -51,15 +62,26 @@ public class LibraryDaoJdbc implements LibraryDao {
 
     @Override
     public List<Book> getAllBooks() {
-        return jdbc.query("select * from BOOKS", new BookMapper());
+        List<Book> bookList = jdbc.query("select id, title, author_id, genre_id from BOOKS", new BookMapper());
+        if (!bookList.isEmpty()) {
+            for (Book book : bookList) {
+                Author author = getAuthorById(book.getAuthor().getId());
+                Genre genre = getGenreById(book.getGenre().getId());
+
+                book.setAuthor(author);
+                book.setGenre(genre);
+            }
+        }
+
+        return bookList;
     }
 
     @Override
     public void updateBook(long id, Book book) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("title", book.getTitle());
-        params.addValue("authorId", book.getAuthorId());
-        params.addValue("genreId", book.getGenreId());
+        params.addValue("authorId", book.getAuthor().getId());
+        params.addValue("genreId", book.getGenre().getId());
         params.addValue("id", id);
         jdbc.update("update BOOKS " +
                         "set title = :title, author_id = :authorId, genre_id = :genreId " +
@@ -75,24 +97,22 @@ public class LibraryDaoJdbc implements LibraryDao {
     }
 
     @Override
-    public String getAuthorById(long id) {
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("id", id);
-
+    public Author getAuthorById(long id) {
         try {
-            return jdbc.queryForObject("select * from AUTHORS where id = :id", params, new AuthorMapper()).getName();
+            return jdbc.queryForObject("select id, author from AUTHORS where id = :id",
+                                        Map.of("id", id),
+                                        new AuthorMapper());
         } catch (DataAccessException e) {
             return null;
         }
     }
 
     @Override
-    public String getGenreById(long id) {
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("id", id);
-
+    public Genre getGenreById(long id) {
         try {
-            return jdbc.queryForObject("select * from GENRES where id = :id", params, new GenreMapper()).getName();
+            return jdbc.queryForObject("select id, genre from GENRES where id = :id",
+                                        Map.of("id", id),
+                                        new GenreMapper());
         } catch (DataAccessException e) {
             return null;
         }
@@ -100,12 +120,34 @@ public class LibraryDaoJdbc implements LibraryDao {
 
     @Override
     public List<Author> getAllAuthors() {
-        return jdbc.query("select * from AUTHORS", new AuthorMapper());
+        return jdbc.query("select id, author from AUTHORS", new AuthorMapper());
     }
 
     @Override
     public List<Genre> getAllGenres() {
-        return jdbc.query("select * from GENRES", new GenreMapper());
+        return jdbc.query("select id, genre from GENRES", new GenreMapper());
+    }
+
+    @Override
+    public Author getAuthorByName(String authorName) {
+        try {
+            return jdbc.queryForObject("select id, author from AUTHORS where author = :authorName",
+                    Map.of("authorName", authorName),
+                    new AuthorMapper());
+        } catch (DataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Genre getGenreByName(String genreName) {
+        try {
+            return jdbc.queryForObject("select id, genre from GENRES where genre = :genreName",
+                    Map.of("genreName", genreName),
+                    new GenreMapper());
+        } catch (DataAccessException e) {
+            return null;
+        }
     }
 
     private static class BookMapper implements RowMapper<Book> {
@@ -119,7 +161,7 @@ public class LibraryDaoJdbc implements LibraryDao {
             String title = resultSet.getString("title");
             long authorId = resultSet.getLong("author_id");
             long genreId = resultSet.getLong("genre_id");
-            return new Book(id, title, authorId, genreId);
+            return new Book(id, title, new Author(authorId, ""), new Genre(genreId, ""));
         }
     }
 

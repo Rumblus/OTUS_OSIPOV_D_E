@@ -12,8 +12,12 @@ public class ShellManager {
     private final LibraryManager libraryManager;
 
     @ShellMethod(key = "createBook")
-    public void createBook(@ShellOption String title, @ShellOption String authorId, @ShellOption String genreId) {
-        libraryManager.createBook(title, Long.parseLong(authorId), Long.parseLong(genreId));
+    public void createBook(@ShellOption String title, @ShellOption String authorName, @ShellOption String genreName) {
+        title = title.replace(',', ' ');
+        authorName = authorName.replace(',', ' ');
+        genreName = genreName.replace(',', ' ');
+
+        libraryManager.createBook(title, authorName, genreName);
     }
 
     @ShellMethod(key = "getBookById")
@@ -29,12 +33,13 @@ public class ShellManager {
     @ShellMethod(key = "updateBook")
     public void updateBook(@ShellOption String id,
                            @ShellOption String newTitle,
-                           @ShellOption String newAuthorId,
-                           @ShellOption String newGenreId) {
-        libraryManager.updateBook(Long.parseLong(id),
-                                  newTitle,
-                                  Long.parseLong(newAuthorId),
-                                  Long.parseLong(newGenreId));
+                           @ShellOption String newAuthorName,
+                           @ShellOption String newGenreName) {
+        newTitle = newTitle.replace(',', ' ');
+        newAuthorName = newAuthorName.replace(',', ' ');
+        newGenreName = newGenreName.replace(',', ' ');
+
+        libraryManager.updateBook(Long.parseLong(id), newTitle, newAuthorName, newGenreName);
     }
 
     @ShellMethod(key = "deleteBook")

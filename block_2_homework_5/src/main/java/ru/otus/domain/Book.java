@@ -12,9 +12,9 @@ import lombok.Setter;
 public class Book {
     private long id;
 
-    private final String title;
+    private String title;
 
-    private final long authorId;
+    private Author author;
 
-    private final long genreId;
+    private Genre genre;
 }

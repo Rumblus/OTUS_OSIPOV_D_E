@@ -18,11 +18,15 @@ public interface LibraryDao {
 
     void deleteBook(long id);
 
-    String getAuthorById(long id);
+    Author getAuthorById(long id);
 
-    String getGenreById(long id);
+    Genre getGenreById(long id);
 
     List<Author> getAllAuthors();
 
     List<Genre> getAllGenres();
+
+    Author getAuthorByName(String authorName);
+
+    Genre getGenreByName(String genreName);
 }

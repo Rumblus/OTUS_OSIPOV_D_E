@@ -27,7 +27,9 @@ public class LibraryDaoJdbcTest {
     @DisplayName("InsertBook")
     @Test
     public void shouldInsertBook() {
-        Book expectedBook = new Book(2, "TestBook", 1, 2);
+        Author author = new Author(2, "Lev Tolstoi");
+        Genre genre = new Genre(2, "Fairy Tale");
+        Book expectedBook = new Book(2, "TestBook", author, genre);
         Book insertedBook = libraryDao.insertBook(expectedBook);
         Book selectedBook = libraryDao.getBookById(insertedBook.getId()).get();
         assertThat(selectedBook).usingRecursiveComparison().isEqualTo(expectedBook);
@@ -36,7 +38,7 @@ public class LibraryDaoJdbcTest {
     @DisplayName("GetById")
     @Test
     public void shouldGetBookById() {
-        Book bookThatExists = new Book(1, "Black Arrow", 1, 1);
+        Book bookThatExists = new Book(1, "Black Arrow", new Author(1, "Robert Lewis Stevenson"), new Genre(1, "Novel"));
         Book selectedBook = libraryDao.getBookById(bookThatExists.getId()).get();
         assertThat(selectedBook).usingRecursiveComparison().isEqualTo(bookThatExists);
     }
@@ -45,8 +47,8 @@ public class LibraryDaoJdbcTest {
     @DisplayName("GetAllBooks")
     public void shouldGetAllBooks() {
         List<Book> expectedList = List.of(
-                new Book(1, "Black Arrow", 1, 1),
-                new Book(2, "Sherlock Holmes", 2, 3)
+                new Book(1, "Black Arrow", new Author(1, "Robert Lewis Stevenson"), new Genre(1, "Novel")),
+                new Book(2, "Sherlock Holmes", new Author(2, "Lev Tolstoi"), new Genre(3, "Detective"))
         );
 
         List<Book> actualList = libraryDao.getAllBooks();
@@ -56,7 +58,7 @@ public class LibraryDaoJdbcTest {
     @DisplayName("UpdateBook")
     @Test
     public void shouldUpdateBook() {
-        Book expectedBook = new Book(1, "TestBook", 2, 2);
+        Book expectedBook = new Book(1, "TestBook", new Author(2, "Lev Tolstoi"), new Genre(2, "Fairy Tale"));
         libraryDao.updateBook(expectedBook.getId(), expectedBook);
         Book updatedBook = libraryDao.getBookById(expectedBook.getId()).get();
         assertThat(updatedBook).usingRecursiveComparison().isEqualTo(expectedBook);
@@ -76,7 +78,7 @@ public class LibraryDaoJdbcTest {
     @Test
     public void shouldGetAuthorNameById() {
         String expectedName = "Robert Lewis Stevenson";
-        String actualName = libraryDao.getAuthorById(1);
+        String actualName = libraryDao.getAuthorById(1).getName();
         assertThat(actualName).isEqualTo(expectedName);
     }
 
@@ -84,7 +86,7 @@ public class LibraryDaoJdbcTest {
     @Test
     public void shouldGetGenreById() {
         String expectedGenre = "Novel";
-        String actualGenre = libraryDao.getGenreById(1);
+        String actualGenre = libraryDao.getGenreById(1).getName();
         assertThat(actualGenre).isEqualTo(expectedGenre);
     }
 

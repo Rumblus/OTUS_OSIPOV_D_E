@@ -16,17 +16,21 @@ public class LibraryManagerImpl implements LibraryManager {
     private LibraryDao libraryDao;
 
     @Override
-    public void createBook(String title, long authorId, long genreId) {
-        if (!authorExists(authorId)) {
-            System.out.println("No author with id = " + authorId + " found!");
-            return;
-        }
-        if (!genreExists(genreId)) {
-            System.out.println("No genre with id = " + genreId + " found!");
+    public void createBook(String title, String authorName, String genreName) {
+        Author author = libraryDao.getAuthorByName(authorName);
+        Genre genre = libraryDao.getGenreByName(genreName);
+
+        if (author == null) {
+            System.out.println("No author with name = " + authorName + " found!");
             return;
         }
 
-        Book book = new Book(1, title, authorId, genreId);
+        if (genre == null) {
+            System.out.println("No genre with name = " + genreName + " found!");
+            return;
+        }
+
+        Book book = new Book(1, title, author, genre);
         book = libraryDao.insertBook(book);
         System.out.println("Book created! ID is: " + book.getId());
     }
@@ -38,8 +42,8 @@ public class LibraryManagerImpl implements LibraryManager {
             Book book = bookOpt.get();
             System.out.println("Book\n\tid: " + book.getId() +
                                 "\n\ttitle: " + book.getTitle() +
-                                "\n\tauthorId: " + libraryDao.getAuthorById(book.getAuthorId()) +
-                                "\n\tgenreId: " + libraryDao.getGenreById(book.getGenreId()));
+                                "\n\tauthor: " + libraryDao.getAuthorById(book.getAuthor().getId()).getName() +
+                                "\n\tgenre: " + libraryDao.getGenreById(book.getGenre().getId()).getName());
         } else {
             System.out.println("No book with id = " + id + " found!");
         }
@@ -57,27 +61,32 @@ public class LibraryManagerImpl implements LibraryManager {
         for (Book book : bookList) {
             System.out.println("Book\n\tid: " + book.getId() +
                     "\n\ttitle: " + book.getTitle() +
-                    "\n\tauthorId: " + libraryDao.getAuthorById(book.getAuthorId()) +
-                    "\n\tgenreId: " + libraryDao.getGenreById(book.getGenreId()) + "\n");
+                    "\n\tauthor: " + libraryDao.getAuthorById(book.getAuthor().getId()).getName() +
+                    "\n\tgenre: " + libraryDao.getGenreById(book.getGenre().getId()).getName() + "\n");
         }
     }
 
     @Override
-    public void updateBook(long id, String title, long authorId, long genreId) {
+    public void updateBook(long id, String title, String authorName, String genreName) {
         if (!bookExists(id)) {
             System.out.println("No book with id = " + id + " found!");
             return;
         }
-        if (!authorExists(authorId)) {
-            System.out.println("No author with id = " + authorId + " found!");
-            return;
-        }
-        if (!genreExists(genreId)) {
-            System.out.println("No genre with id = " + genreId + " found!");
+
+        Author author = libraryDao.getAuthorByName(authorName);
+        Genre genre = libraryDao.getGenreByName(genreName);
+
+        if (author == null) {
+            System.out.println("No author with name = " + authorName + " found!");
             return;
         }
 
-        Book book = new Book(1, title, authorId, genreId);
+        if (genre == null) {
+            System.out.println("No genre with name = " + genreName + " found!");
+            return;
+        }
+
+        Book book = new Book(1, title, author, genre);
         libraryDao.updateBook(id, book);
         System.out.println("Book was updated!");
     }
@@ -129,24 +138,6 @@ public class LibraryManagerImpl implements LibraryManager {
             return true;
         } else {
             return false;
-        }
-    }
-
-    private boolean authorExists(long id) {
-        Optional<String> author = Optional.ofNullable(libraryDao.getAuthorById(id));
-        if (author.isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private boolean genreExists(long id) {
-        Optional<String> genre = Optional.ofNullable(libraryDao.getGenreById(id));
-        if (genre.isEmpty()) {
-            return false;
-        } else {
-            return true;
         }
     }
 }
