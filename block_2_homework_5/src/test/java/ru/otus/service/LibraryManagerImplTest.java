@@ -7,23 +7,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.dao.LibraryDaoJdbc;
+import ru.otus.dao.AuthorDaoJdbc;
+import ru.otus.dao.BookDaoJdbc;
+import ru.otus.dao.GenreDaoJdbc;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Genre;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("Тесты сервисного класса библиотеки")
 @JdbcTest(properties = "spring.shell.interactive.enabled=false")
 @ExtendWith(SpringExtension.class)
-@Import({LibraryManagerImpl.class, LibraryDaoJdbc.class})
+@Import({LibraryManagerImpl.class, BookDaoJdbc.class, AuthorDaoJdbc.class, GenreDaoJdbc.class})
 public class LibraryManagerImplTest {
     @Autowired
-    private LibraryDaoJdbc libraryDao;
+    private BookDaoJdbc bookdao;
+
+    @Autowired
+    private AuthorDaoJdbc authorDao;
+
+    @Autowired
+    private GenreDaoJdbc genreDao;
+
     @Autowired
     private LibraryManagerImpl libraryManager;
 
@@ -33,43 +39,18 @@ public class LibraryManagerImplTest {
         Book book = new Book(3, "Test Book", new Author(2, "Lev Tolstoi"), new Genre(2, "Fairy Tale"));
         libraryManager.createBook(book.getTitle(), book.getAuthor().getName(), book.getGenre().getName());
 
-        PrintStream systemOutput = System.out;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream out = new PrintStream(baos);
-        System.setOut(out);
+        Book createdBook = libraryManager.getBookById(book.getId());
 
-        libraryManager.getBookById(book.getId());
-
-        String expectedString = new String("Book\n\tid: " + book.getId() +
-                "\n\ttitle: " + book.getTitle() +
-                "\n\tauthor: " + "Lev Tolstoi" +
-                "\n\tgenre: " + "Fairy Tale");
-
-        String[] lines = baos.toString().split(System.lineSeparator());
-        System.setOut(systemOutput);
-        assert(lines[0]).contains(expectedString.subSequence(0, expectedString.length() - 1));
+        assertThat(createdBook).usingRecursiveComparison().isEqualTo(book);
     }
 
     @DisplayName("Должен возвращать книгу по ID")
     @Test
     public void shouldGetBookById() {
-        PrintStream systemOutput = System.out;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream out = new PrintStream(baos);
-        System.setOut(out);
-
         Book book = new Book(1, "Black Arrow", new Author(1, "Robert Lewis Stevenson"), new Genre(1, "Novel"));
-        libraryManager.getBookById(book.getId());
+        Book actualBook = libraryManager.getBookById(book.getId());
 
-        String expectedString = new String(
-                "Book\n\tid: " + book.getId() +
-                "\n\ttitle: " + book.getTitle() +
-                "\n\tauthor: " + "Robert Lewis Stevenson" +
-                "\n\tgenre: " + "Novel");
-
-        String[] lines = baos.toString().split(System.lineSeparator());
-        System.setOut(systemOutput);
-        assert(lines[0]).contains(expectedString.subSequence(0, expectedString.length() - 1));
+        assertThat(actualBook).usingRecursiveComparison().isEqualTo(book);
     }
 
     @DisplayName("Должен редактировать книгу по ID")
@@ -78,22 +59,9 @@ public class LibraryManagerImplTest {
         Book book = new Book(1, "TestBook", new Author(2, "Lev Tolstoi"), new Genre(2, "Fairy Tale"));
         libraryManager.updateBook(book.getId(), book.getTitle(), book.getAuthor().getName(), book.getGenre().getName());
 
-        PrintStream systemOutput = System.out;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream out = new PrintStream(baos);
-        System.setOut(out);
+        Book actualBook = libraryManager.getBookById(book.getId());
 
-        libraryManager.getBookById(book.getId());
-
-        String expectedString = new String(
-                "Book\n\tid: " + book.getId() +
-                        "\n\ttitle: " + book.getTitle() +
-                        "\n\tauthor: " + "Lev Tolstoi" +
-                        "\n\tgenre: " + "Fairy Tale");
-
-        String[] lines = baos.toString().split(System.lineSeparator());
-        System.setOut(systemOutput);
-        assert(lines[0]).contains(expectedString.subSequence(0, expectedString.length() - 1));
+        assertThat(actualBook).usingRecursiveComparison().isEqualTo(book);
     }
 
     @DisplayName("Должен удалять книгу")
@@ -102,17 +70,8 @@ public class LibraryManagerImplTest {
         long idToDelete = 2;
         libraryManager.deleteBook(idToDelete);
 
-        PrintStream systemOutput = System.out;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream out = new PrintStream(baos);
-        System.setOut(out);
+        Book actualBook = libraryManager.getBookById(idToDelete);
 
-        String expectedString = new String("No book with id = " + idToDelete + " found!");
-
-        libraryManager.getBookById(idToDelete);
-
-        String[] lines = baos.toString().split(System.lineSeparator());
-        System.setOut(systemOutput);
-        assert(lines[0]).contains(expectedString.subSequence(0, expectedString.length() - 1));
+        assertThat(actualBook).isNull();
     }
 }

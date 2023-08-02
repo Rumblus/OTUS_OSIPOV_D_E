@@ -1,17 +1,24 @@
 package ru.otus.service;
 
+import ru.otus.domain.Author;
+import ru.otus.domain.Book;
+import ru.otus.domain.Genre;
+import ru.otus.errors.LibraryErrorCode;
+
+import java.util.List;
+
 public interface LibraryManager {
-    void createBook(String title, String authorName, String genreName);
+    Book createBook(String title, String authorName, String genreName);
 
-    void getBookById(long id);
+    Book getBookById(long id);
 
-    void getAllBooks();
+    List<Book> getAllBooks();
 
-    void updateBook(long id, String title, String authorName, String genreName);
+    LibraryErrorCode updateBook(long id, String title, String authorName, String genreName);
 
-    void deleteBook(long id);
+    LibraryErrorCode deleteBook(long id);
 
-    void getAllAuthors();
+    List<Author> getAllAuthors();
 
-    void getAllGenres();
+    List<Genre> getAllGenres();
 }
