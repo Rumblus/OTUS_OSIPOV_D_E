@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.dao.AuthorDaoJdbc;
@@ -21,13 +22,13 @@ import static org.assertj.core.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @Import({LibraryManagerImpl.class, BookDaoJdbc.class, AuthorDaoJdbc.class, GenreDaoJdbc.class})
 public class LibraryManagerImplTest {
-    @Autowired
+    @SpyBean
     private BookDaoJdbc bookdao;
 
-    @Autowired
+    @SpyBean
     private AuthorDaoJdbc authorDao;
 
-    @Autowired
+    @SpyBean
     private GenreDaoJdbc genreDao;
 
     @Autowired
