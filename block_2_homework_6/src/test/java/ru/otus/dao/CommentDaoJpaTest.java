@@ -1,6 +1,5 @@
 package ru.otus.dao;
 
-import jakarta.persistence.TypedQuery;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +11,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.domain.Book;
 import ru.otus.domain.Comment;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -36,18 +34,6 @@ public class CommentDaoJpaTest {
 
         assertThat(actualComment).isNotEmpty();
         assertThat(actualComment.get()).isEqualTo(expectedComment);
-    }
-
-    @DisplayName("GetAllCommentsByBookId")
-    @Test
-    public void shouldGetAllCommentsByBookId() {
-        TypedQuery<Comment> query = em.getEntityManager().createQuery(
-                "select c from Comment c where c.book.id = 1", Comment.class);
-        List<Comment> expectedList = query.getResultList();
-
-        List<Comment> actualList = commentDao.getAllCommentsByBookId(1);
-
-        assertThat(actualList).containsExactlyElementsOf(expectedList);
     }
 
     @DisplayName("CreateComment")

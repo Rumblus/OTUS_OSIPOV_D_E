@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.domain.Author;
-import ru.otus.domain.Book;
 
 import java.util.List;
 

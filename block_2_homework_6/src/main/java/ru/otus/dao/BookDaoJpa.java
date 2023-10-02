@@ -46,8 +46,7 @@ public class BookDaoJpa implements BookDao {
         TypedQuery<Book> query = em.createQuery(
                 "select b from Book b " +
                    "left join fetch b.author " +
-                   "left join fetch b.genre " +
-                   "left join fetch b.comments",
+                   "left join fetch b.genre ",
                     Book.class);
         return query.getResultList();
     }

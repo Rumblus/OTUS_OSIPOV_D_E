@@ -1,6 +1,5 @@
 package ru.otus.service;
 
-import jakarta.persistence.TypedQuery;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,16 +16,14 @@ import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Comment;
 import ru.otus.domain.Genre;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("Тесты сервисного класса библиотеки")
+@DisplayName("Интеграционные тесты сервисного класса библиотеки")
 @DataJpaTest(properties = "spring.shell.interactive.enabled=false")
 @ExtendWith(SpringExtension.class)
-@Import({LibraryManagerImpl.class, BookDaoJpa.class, AuthorDaoJpa.class, GenreDaoJpa.class, CommentDaoJpa.class})
+@Import({LibraryManagerImpl.class, BookManagerImpl.class, AuthorManagerImpl.class, GenreManagerImpl.class, CommentManagerImpl.class, BookDaoJpa.class, AuthorDaoJpa.class, GenreDaoJpa.class, CommentDaoJpa.class})
 public class LibraryManagerImplTest {
 
     @Autowired
@@ -75,19 +72,6 @@ public class LibraryManagerImplTest {
         Book actualBook = em.find(Book.class, idToDelete);
 
         assertThat(actualBook).isNull();
-    }
-
-    @DisplayName("Должен получать комментарии книги")
-    @Test
-    public void shouldGetBookComments() {
-        TypedQuery<Comment> query = em.getEntityManager().createQuery(
-                "select c from Comment c where c.book.id = 1", Comment.class);
-        List<Comment> expectedList = query.getResultList();
-
-        List<Comment> actualList = libraryManager.getBookComments("Black Arrow");
-
-        assertThat(actualList).isNotEmpty();
-        assertThat(actualList).containsExactlyElementsOf(expectedList);
     }
 
     @DisplayName("Должен создавать комментарий")

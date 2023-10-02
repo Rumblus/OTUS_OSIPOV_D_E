@@ -1,5 +1,6 @@
 package ru.otus.shell;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -32,6 +33,7 @@ public class ShellManager {
         }
     }
 
+    @Transactional
     @ShellMethod(key = "getBookById")
     public void getBookById(@ShellOption String id) {
         Book book = libraryManager.getBookById(Long.parseLong(id));
@@ -41,17 +43,18 @@ public class ShellManager {
                     "\n\ttitle: " + book.getTitle() +
                     "\n\tauthor: " + book.getAuthor().getName() +
                     "\n\tgenre: " + book.getGenre().getName());
+
+            System.out.println("\n\tcomments:");
+            int i = 1;
+            for (Comment comment : book.getComments()) {
+                System.out.println("\t" + i++ + ") " + comment.getData() + "\n");
+            }
         } else {
             System.out.println("No book with id = " + id + " found!");
         }
-
-        System.out.println("\n\tcomments:");
-        int i = 1;
-        for (Comment comment : book.getComments()) {
-            System.out.println("\t" + i++ + ") " + comment.getData() + "\n");
-        }
     }
 
+    @Transactional
     @ShellMethod(key = "getAllBooks")
     public void getAllBooks() {
         List<Book> bookList = libraryManager.getAllBooks();

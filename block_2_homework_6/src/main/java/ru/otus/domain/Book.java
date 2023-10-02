@@ -1,7 +1,9 @@
 package ru.otus.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -9,8 +11,6 @@ import java.util.List;
 @Table(name = "books")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Data
 public class Book {
     @Id
@@ -28,7 +28,7 @@ public class Book {
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "book_id")
     private List<Comment> comments;
 }
