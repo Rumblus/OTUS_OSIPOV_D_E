@@ -33,7 +33,6 @@ public class ShellManager {
         }
     }
 
-    @Transactional
     @ShellMethod(key = "getBookById")
     public void getBookById(@ShellOption String id) {
         Book book = libraryManager.getBookById(Long.parseLong(id));
@@ -54,7 +53,6 @@ public class ShellManager {
         }
     }
 
-    @Transactional
     @ShellMethod(key = "getAllBooks")
     public void getAllBooks() {
         List<Book> bookList = libraryManager.getAllBooks();
