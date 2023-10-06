@@ -1,6 +1,5 @@
 package ru.otus.shell;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -33,7 +32,6 @@ public class ShellManager {
         }
     }
 
-    @Transactional
     @ShellMethod(key = "getBookById")
     public void getBookById(@ShellOption String id) {
         Book book = libraryManager.getBookById(Long.parseLong(id));
@@ -54,7 +52,6 @@ public class ShellManager {
         }
     }
 
-    @Transactional
     @ShellMethod(key = "getAllBooks")
     public void getAllBooks() {
         List<Book> bookList = libraryManager.getAllBooks();

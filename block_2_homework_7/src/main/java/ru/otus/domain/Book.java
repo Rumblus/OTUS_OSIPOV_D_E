@@ -20,11 +20,11 @@ public class Book {
     @Column(name = "title")
     private String title;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "author_id")
     private Author author;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "genre_id")
     private Genre genre;
 

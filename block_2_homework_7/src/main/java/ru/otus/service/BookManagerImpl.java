@@ -8,6 +8,7 @@ import ru.otus.dao.BookDao;
 import ru.otus.dao.GenreDao;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
+import ru.otus.domain.Comment;
 import ru.otus.domain.Genre;
 import ru.otus.errors.LibraryErrorCode;
 
@@ -44,19 +45,31 @@ public class BookManagerImpl implements BookManager {
         return book;
     }
 
+    @Transactional
     @Override
     public Book getBookById(long id) {
         Optional<Book> bookOpt = bookDao.findById(id);
         if (!bookOpt.isEmpty()) {
-            return bookOpt.get();
+            Book book = bookOpt.get();
+            // Подгружаем комментарии
+            for (Comment comment : book.getComments()) {
+            }
+            return book;
         } else {
             return null;
         }
     }
 
+    @Transactional
     @Override
     public List<Book> getAllBooks() {
-        return bookDao.findAll();
+        List<Book> books = bookDao.findAll();
+        for (Book book : books) {
+            // Подгружаем комментарии
+            for (Comment comment : book.getComments()) {
+            }
+        }
+        return books;
     }
 
     @Transactional
