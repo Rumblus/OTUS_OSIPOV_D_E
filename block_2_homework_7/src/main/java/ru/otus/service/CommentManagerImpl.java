@@ -9,6 +9,7 @@ import ru.otus.domain.Book;
 import ru.otus.domain.Comment;
 import ru.otus.errors.LibraryErrorCode;
 
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -43,5 +44,10 @@ public class CommentManagerImpl implements CommentManager {
 
         commentDao.delete(new Comment(commentId, bookOpt.get(), ""));
         return LibraryErrorCode.ERR_OK;
+    }
+
+    @Override
+    public List<Comment> getAllBookComments(Book book) {
+        return commentDao.findCommentsByBookId(book.getId());
     }
 }

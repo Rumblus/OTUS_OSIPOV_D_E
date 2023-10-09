@@ -44,7 +44,9 @@ public class ShellManager {
 
             System.out.println("\n\tcomments:");
             int i = 1;
-            for (Comment comment : book.getComments()) {
+            List<Comment> comments = libraryManager.getAllBookComments(book);
+
+            for (Comment comment : comments) {
                 System.out.println("\t" + i++ + ") " + comment.getData() + "\n");
             }
         } else {
@@ -67,13 +69,15 @@ public class ShellManager {
                     "\n\tauthor: " + book.getAuthor().getName() +
                     "\n\tgenre: " + book.getGenre().getName());
 
-            if (book.getComments().isEmpty()) {
+            List<Comment> comments = libraryManager.getAllBookComments(book);
+
+            if (comments.isEmpty()) {
                 continue;
             }
 
             System.out.println("\n\tcomments:");
             int i = 1;
-            for (Comment comment : book.getComments()) {
+            for (Comment comment : comments) {
                 System.out.println("\t" + i++ + ") " + comment.getData() + "\n");
             }
         }

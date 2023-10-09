@@ -10,6 +10,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.domain.Book;
 import ru.otus.domain.Comment;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -55,5 +56,14 @@ public class CommentDaoTest {
         Comment selectedComment = em.find(Comment.class, 1);
 
         assertThat(selectedComment).isNull();
+    }
+
+    @DisplayName("GetAllBookComments")
+    @Test
+    public void shouldGetAllBookComments() {
+        List<Comment> expectedList = List.of(em.find(Comment.class, 1));
+        List<Comment> actualList = commentDao.findCommentsByBookId(1);
+
+        assertThat(actualList).containsExactlyElementsOf(expectedList);
     }
 }
