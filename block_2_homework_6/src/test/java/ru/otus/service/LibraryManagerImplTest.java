@@ -17,6 +17,7 @@ import ru.otus.domain.Book;
 import ru.otus.domain.Comment;
 import ru.otus.domain.Genre;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -95,5 +96,15 @@ public class LibraryManagerImplTest {
         Comment selectedComment = em.find(Comment.class, commentToDelete.getId());
 
         assertThat(selectedComment).isNull();
+    }
+
+    @DisplayName("GetAllBookComments")
+    @Test
+    public void shouldGetAllBookComments() {
+        Book book = new Book(1, "Black Arrow", new Author(1, "Robert Lewis Stevenson"), new Genre(1, "Novel"), new ArrayList<>());
+        List<Comment> expectedList = List.of(em.find(Comment.class, 1));
+        List<Comment> actualList = libraryManager.getAllBookComments(book);
+
+        assertThat(actualList).containsExactlyElementsOf(expectedList);
     }
 }

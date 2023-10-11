@@ -13,6 +13,7 @@ import ru.otus.errors.LibraryErrorCode;
 import ru.otus.service.LibraryManager;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @ShellComponent
@@ -42,12 +43,6 @@ public class ShellManager {
                     "\n\ttitle: " + book.getTitle() +
                     "\n\tauthor: " + book.getAuthor().getName() +
                     "\n\tgenre: " + book.getGenre().getName());
-
-            System.out.println("\n\tcomments:");
-            int i = 1;
-            for (Comment comment : book.getComments()) {
-                System.out.println("\t" + i++ + ") " + comment.getData() + "\n");
-            }
         } else {
             System.out.println("No book with id = " + id + " found!");
         }
@@ -67,16 +62,6 @@ public class ShellManager {
                     "\n\ttitle: " + book.getTitle() +
                     "\n\tauthor: " + book.getAuthor().getName() +
                     "\n\tgenre: " + book.getGenre().getName());
-
-            if (book.getComments().isEmpty()) {
-                continue;
-            }
-
-            System.out.println("\n\tcomments:");
-            int i = 1;
-            for (Comment comment : book.getComments()) {
-                System.out.println("\t" + i++ + ") " + comment.getData() + "\n");
-            }
         }
     }
 
@@ -159,6 +144,22 @@ public class ShellManager {
         switch (ec) {
             case ERR_BOOK_NOT_FOUND -> System.out.println("No book with name = " + bookName + " found!");
             case ERR_OK -> System.out.println("Comment deleted or doesn't exist. Success!");
+        }
+    }
+
+    @ShellMethod(key = "getAllBookComments")
+    public void getAllBookComments(@ShellOption String bookId) {
+        Book book = libraryManager.getBookById(Long.parseLong(bookId));
+        if (book == null) {
+            System.out.println("No book with id = " + bookId + " found!");
+            return;
+        }
+
+        List<Comment> comments = libraryManager.getAllBookComments(book);
+        System.out.println("\n\tcomments:");
+        int i = 1;
+        for (Comment comment : comments) {
+            System.out.println("\t" + i++ + ") " + comment.getData() + "\n");
         }
     }
 }

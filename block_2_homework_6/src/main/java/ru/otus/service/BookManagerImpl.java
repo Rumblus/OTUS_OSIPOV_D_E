@@ -45,30 +45,18 @@ public class BookManagerImpl implements BookManager {
         return book;
     }
 
-    @Transactional
     @Override
     public Book getBookById(long id) {
         Optional<Book> bookOpt = bookDao.getBookById(id);
         if (!bookOpt.isEmpty()) {
-            Book book = bookOpt.get();
-            // Подгружаем комментарии к книге
-            for (Comment comment : book.getComments()) {
-            }
-            return book;
+            return bookOpt.get();
         } else {
             return null;
         }
     }
 
-    @Transactional
     @Override
     public List<Book> getAllBooks() {
-        List<Book> books = bookDao.getAllBooks();
-        // Подгружаем комментарии к книгам
-        for(Book book : books) {
-            for (Comment comment : book.getComments()) {
-            }
-        }
         return bookDao.getAllBooks();
     }
 

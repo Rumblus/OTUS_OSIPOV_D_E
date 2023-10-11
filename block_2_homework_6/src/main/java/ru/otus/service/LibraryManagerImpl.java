@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
+import ru.otus.domain.Comment;
 import ru.otus.domain.Genre;
 import ru.otus.errors.LibraryErrorCode;
 import java.util.List;
@@ -64,5 +65,10 @@ public class LibraryManagerImpl implements LibraryManager {
     @Override
     public LibraryErrorCode deleteComment(String bookName, int commentId) {
         return commentManager.deleteComment(bookName, commentId);
+    }
+
+    @Override
+    public List<Comment> getAllBookComments(Book book) {
+        return commentManager.getAllBookComments(book);
     }
 }

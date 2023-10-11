@@ -18,6 +18,7 @@ import ru.otus.domain.Genre;
 import ru.otus.errors.LibraryErrorCode;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,5 +56,17 @@ public class CommentManagerImplTest {
         Mockito.doReturn(Optional.ofNullable(new Book(3, "Black Arrow", new Author(1, "Robert Lewis Stevenson"), new Genre(1, "Novel"), new ArrayList<>()))).when(bookDao).getBookByName("Black Arrow");
         LibraryErrorCode err = commentManager.deleteComment("Black Arrow", 1);
         assertThat(err).isEqualTo(LibraryErrorCode.ERR_OK);
+    }
+
+    @DisplayName("GetAllBookComments")
+    @Test
+    public void shouldGetAllBookComments() {
+        Book book = new Book(3, "Black Arrow", new Author(1, "Robert Lewis Stevenson"), new Genre(1, "Novel"), new ArrayList<>());
+        List<Comment> expectedList = List.of(new Comment(1, book, "Very interesting book!"));
+        Mockito.when(commentDao.getCommentsByBookId(any(long.class))).thenReturn(expectedList);
+
+        List<Comment> actualList = commentManager.getAllBookComments(book);
+
+        assertThat(actualList).containsExactlyElementsOf(expectedList);
     }
 }
