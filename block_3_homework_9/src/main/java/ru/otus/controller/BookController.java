@@ -31,15 +31,34 @@ public class BookController {
         return "edit";
     }
 
-//    @PostMapping("/edit")
-//    public String updateBook(Book book) {
-//        libraryManager.updateBook(book.getId(), book.getTitle(), book.getAuthor().getName(), book.getGenre().getName());
-//        return "redirect:/";
-//    }
-
     @PostMapping("/edit")
-    public String updateBookBBB(@RequestParam("id") String id, @RequestParam("title") String title, @RequestParam("author") String author, @RequestParam("genre") String genre) {
+    public String updateBook(@RequestParam("id") String id,
+                             @RequestParam("title") String title,
+                             @RequestParam("author") String author,
+                             @RequestParam("genre") String genre) {
         libraryManager.updateBook(Long.parseLong(id), title, author, genre);
+        return "redirect:/";
+    }
+
+    @GetMapping("/create")
+    public String createBookPage(Model model) {
+        model.addAttribute("title", "");
+        model.addAttribute("authorName", "");
+        model.addAttribute("genreName", "");
+        return "create";
+    }
+
+    @PostMapping("/create")
+    public String createBook(@RequestParam("title") String title,
+                             @RequestParam("authorName") String authorName,
+                             @RequestParam("genreName") String genreName) {
+        libraryManager.createBook(title, authorName, genreName);
+        return "redirect:/";
+    }
+
+    @PostMapping("/delete")
+    public String deleteBook(@RequestParam("id") long id) {
+        libraryManager.deleteBook(id);
         return "redirect:/";
     }
 }
