@@ -1,5 +1,7 @@
 package ru.otus.service;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +16,7 @@ import ru.otus.dao.BookDao;
 import ru.otus.dao.GenreDao;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
+import ru.otus.domain.Comment;
 import ru.otus.domain.Genre;
 import ru.otus.errors.LibraryErrorCode;
 
@@ -45,6 +48,19 @@ public class BookManagerImplTest {
 
     @MockBean
     private GenreDao genreDao;
+
+    @BeforeEach
+    public void fillDb() {
+        mongoTemplate.save(new Author("1","Robert Lewis Stevenson"));
+        mongoTemplate.save(new Genre("1","Novel"));
+        mongoTemplate.save(
+                new Book("1",
+                        "Black Arrow",
+                        new Author("1","Robert Lewis Stevenson"),
+                        new Genre("1","Novel"),
+                        List.of(new Comment("Very interesting book!")))
+        );
+    }
 
     @DisplayName("createBook")
     @Test
