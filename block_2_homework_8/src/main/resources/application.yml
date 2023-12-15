@@ -1,0 +1,23 @@
+spring:
+  #main:
+    #allow-bean-definition-overriding: true
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: test
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.6.1
+
+mongock:
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.mongock.changelog
+  mongo-db:
+    write-concern:
+      journal: false
+    read-concern: local
