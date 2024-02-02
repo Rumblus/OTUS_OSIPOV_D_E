@@ -6,8 +6,9 @@ pipeline {
         stage('build') {
             steps {
                 bat 'java --version'
+				bat 'chcp 1251'
 				bat 'dir'
-				bat 'cd ..'
+				bat 'cd block_1_homework_1'
 				bat 'dir'
             }
         }
