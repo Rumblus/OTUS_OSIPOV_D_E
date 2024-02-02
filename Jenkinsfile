@@ -8,7 +8,7 @@ pipeline {
                 bat 'java --version'
 				bat 'chcp 65001'
 				bat 'dir'
-				bat 'del README.txt'
+				bat 'del README.md'
 				bat 'cd block_1_homework_1'
 				bat 'dir'
             }
