@@ -9,7 +9,7 @@ pipeline {
 				bat 'chcp 65001'
 				bat 'dir'
 				bat 'del README.md'
-				bat 'cd block_1_homework_1'
+				bat 'cd block_1_homework_1 && dir'
 				bat 'dir'
             }
         }
