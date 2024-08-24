@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.otus</groupId>
-    <artifactId>block_3_homework_9</artifactId>
+    <artifactId>block_3_homework_12</artifactId>
     <version>1.0</version>
 
     <parent>
@@ -54,6 +54,14 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>6.3.1</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>org.yaml</groupId>
